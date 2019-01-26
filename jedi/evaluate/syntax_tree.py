@@ -81,7 +81,6 @@ def eval_node(context, element):
         if first_child.type == 'keyword' and first_child.value == 'await':
             had_await = True
             first_child = children.pop(0)
-
         context_set = eval_atom(context, first_child)
         for trailer in children:
             if trailer == '**':  # has a power operation.
@@ -224,7 +223,7 @@ def eval_atom(context, atom):
             right = eval_atom(context, string)
             context_set = _eval_comparison(context.evaluator, context, context_set, u'+', right)
         return context_set
-    else:
+    elif atom.type == 'atom':
         c = atom.children
         # Parentheses without commas are not tuples.
         if c[0] == '(' and not len(c) == 2 \
@@ -261,6 +260,8 @@ def eval_atom(context, atom):
         else:
             context = iterable.SequenceLiteralContext(context.evaluator, context, atom)
         return ContextSet(context)
+    else:
+        return eval_node(context, atom)
 
 
 @_limit_context_infers
