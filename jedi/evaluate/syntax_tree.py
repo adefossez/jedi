@@ -262,7 +262,8 @@ def eval_atom(context, atom):
             context = iterable.SequenceLiteralContext(context.evaluator, context, atom)
         return ContextSet(context)
     else:
-        return eval_node(context, atom)
+        # not a litteral, fall back to evaluating the node
+        return context.eval_node(atom)
 
 
 @_limit_context_infers
